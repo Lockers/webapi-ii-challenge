@@ -4,11 +4,13 @@ import { Posts } from './components/Posts';
 
 class App extends React.Component {
   state = {
-    posts:[]
+    posts: [],
+    singleComment: ''
   }
 
   componentDidMount() {
-   this.getPosts()
+    this.getPosts()
+    this.getComments()
   }
 
   getPosts = () => {
@@ -17,6 +19,21 @@ class App extends React.Component {
       .then(res => {
         const posts = res.data;
         this.setState({ posts })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+  getComments = (id) => {
+    axios
+      .get(`http://localhost:8000/api/posts/${id}/comments`)
+      .then(res => {
+        console.log(res.data)
+        const comments = res.data;
+        const singleComment = comments[0].text
+        console.log(singleComment)
+        this.setState({ singleComment: singleComment })
+        
       })
       .catch(err => {
         console.log(err)
@@ -37,13 +54,14 @@ class App extends React.Component {
       .then(res => {
         const newPost = res.data;
         this.setState({ posts: [...this.state.posts, newPost] })
+        this.getPosts()
       })
   }
 
   deleteUser = (id) => {
     axios
       .delete(`http://localhost:8000/api/posts/${id}`)
-      .then(() => {
+      .then(res => {
         this.getPosts()
       })
       .catch(err => {
@@ -67,8 +85,9 @@ class App extends React.Component {
         <button>Add User</button>
         </form>
         {this.state.posts.map(post => { 
-          return <Posts post={post} key={post.id} deleteUser={this.deleteUser} />
-        })}
+          return <Posts post={post} key={post.id} deleteUser={this.deleteUser} getComments={this.getComments} comment={this.state.singleComment} />
+        })
+        }
     </div>
     );
   }

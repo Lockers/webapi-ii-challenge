@@ -1,6 +1,5 @@
 import React from 'react';
 import Styled from 'styled-components';
-import axios from 'axios';
 
 const Div = Styled.div`
     display: flex;
@@ -32,8 +31,11 @@ export const Posts = (props) => {
             <p>Contents: {props.post.contents}</p>
             <p>Title: {props.post.title}</p>
             <p>Date Created: {props.post.created_at}</p>
+            <h2>Commments</h2>
+            <p>Text: {props.comment}</p>
             
             <button onClick={(event) => props.deleteUser(props.post.id)}>Delete</button>
+            <button onClick={(event) => props.getComments(props.post.id)}>Get comments</button>
         </Div>
     )
 }
